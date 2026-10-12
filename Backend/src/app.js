@@ -20,10 +20,23 @@ app.use(cookieParser())
 //   }),
 // );
 
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173",
+//       "https://gen-ai-project-self.vercel.app"],
+//     credentials: true,
+//   }),
+// );
+
+const cors = require("cors");
+
 app.use(
   cors({
-    origin: ["http://localhost:5173",
-      "https://gen-ai-project-self.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://gen-ai-project-self.vercel.app",
+      "https://gen-ai-project-owdewiqry-rounit1.vercel.app",
+    ],
     credentials: true,
   }),
 );
