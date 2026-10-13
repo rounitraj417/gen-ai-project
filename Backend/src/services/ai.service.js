@@ -133,13 +133,68 @@ ${jobDescription}
 
 //     return pdfBuffer;
 // }
+// async function generatePdfFromHtml(htmlContent) {
+//   const browser = await puppeteer.launch({
+//     executablePath:
+//       "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+//     headless: true,
+//     args: ["--no-sandbox"],
+//   });
+
+//   try {
+//     const page = await browser.newPage();
+
+//     await page.setContent(htmlContent, {
+//       waitUntil: "networkidle0",
+//     });
+
+//     // const pdfBuffer = await page.pdf({
+//     //   format: "A4",
+//     //   printBackground: true,
+//     //   margin: {
+//     //     top: "20mm",
+//     //     bottom: "20mm",
+//     //     left: "15mm",
+//     //     right: "15mm",
+//     //   },
+//       // });
+//       const pdfBuffer = await page.pdf({
+//         format: "A4",
+//         printBackground: true,
+//         preferCSSPageSize: true,
+//         margin: {
+//           top: "12mm",
+//           bottom: "12mm",
+//           left: "12mm",
+//           right: "12mm",
+//         },
+//       });
+
+//     return pdfBuffer;
+//   } finally {
+//     await browser.close();
+//   }
+// }
+
+
 async function generatePdfFromHtml(htmlContent) {
-  const browser = await puppeteer.launch({
-    executablePath:
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    headless: true,
-    args: ["--no-sandbox"],
-  });
+  const isRender = Boolean(process.env.RENDER);
+
+  const browser = await puppeteer.launch(
+    isRender
+      ? {
+          args: chromium.args,
+          executablePath: await chromium.executablePath(),
+          headless: true,
+          defaultViewport: chromium.defaultViewport,
+        }
+      : {
+          executablePath:
+            "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+          headless: true,
+          args: ["--no-sandbox"],
+        },
+  );
 
   try {
     const page = await browser.newPage();
@@ -148,33 +203,24 @@ async function generatePdfFromHtml(htmlContent) {
       waitUntil: "networkidle0",
     });
 
-    // const pdfBuffer = await page.pdf({
-    //   format: "A4",
-    //   printBackground: true,
-    //   margin: {
-    //     top: "20mm",
-    //     bottom: "20mm",
-    //     left: "15mm",
-    //     right: "15mm",
-    //   },
-      // });
-      const pdfBuffer = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        preferCSSPageSize: true,
-        margin: {
-          top: "12mm",
-          bottom: "12mm",
-          left: "12mm",
-          right: "12mm",
-        },
-      });
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: {
+        top: "12mm",
+        bottom: "12mm",
+        left: "12mm",
+        right: "12mm",
+      },
+    });
 
     return pdfBuffer;
   } finally {
     await browser.close();
   }
 }
+
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
